@@ -3,9 +3,12 @@ import pluginJs from "@eslint/js";
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
-  pluginJs.configs.recommended,
   {
-    languageOptions: { globals: globals.browser },
-    files: ["src/**/*.js"],
-  }
+    languageOptions: { globals: globals.browser, sourceType: 'module' },
+    ignores: [
+      "**/dist/",
+      "webpack.config.js"
+    ],
+  },
+  pluginJs.configs.recommended
 ];
