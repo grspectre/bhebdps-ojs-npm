@@ -1,8 +1,7 @@
 import Weapon from './Weapon';
 
 export default class Bow extends Weapon {
-  constructor() {
-    super();
-    // пустая реализация
-  }
+    constructor(name = 'Лук', attack = 10, initDurability = 200, range = 3) {
+        super(name, attack, initDurability, range);
+    }
 }
