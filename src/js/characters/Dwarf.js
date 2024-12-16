@@ -8,10 +8,19 @@ export default class Dwarf extends Warrior {
 
     constructor(position, name) {
         super(position, name);
-        this.life = 130;
         this.attack = 15;
         this.luck = 20;
         this.description = 'Гном';
         this.weapon = new Axe();
+        this.initializeLife(130);
+    }
+
+    takeDamage(damage) {
+        this.incCountBeat();
+        if (this.countBeat % 6 === 0 && this.getLuck() > 0.5) {
+            this.setLife(-1 * (damage / 2));
+        } else {
+            this.setLife(-1 * damage);
+        }
     }
 }
