@@ -1,4 +1,12 @@
 import './css/style.css';
-import { play } from './js/game';
+import Archer from './js/characters/Archer';
+import Warrior from './js/characters/Warrior';
+import Game from './js/game';
 
-play();
+window.addEventListener('load', () => {
+    let players = [
+        new Warrior(10, 'Козий рог'),
+        new Archer(0, 'Кривой вандал')
+    ];
+    new Game('#game', players).play();
+});

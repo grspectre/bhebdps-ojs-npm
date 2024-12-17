@@ -4,15 +4,13 @@ import Arm from '../weapons/Arm';
 import Player from './Player';
 
 export default class Warrior extends Player {
-    mainWeapon = [Sword, Knife, Arm];
-
     constructor(position, name) {
         super(position, name);
         this.speed = 2;
         this.attack = 10;
         this.description = 'Воин';
-        this.weapon = new Sword();
         this.initializeLife(120);
+        this.initializeWeapon([Sword, Knife, Arm]);
     }
 
     takeDamage(damage) {

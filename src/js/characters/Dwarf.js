@@ -4,15 +4,13 @@ import Arm from '../weapons/Arm';
 import Warrior from './Warrior';
 
 export default class Dwarf extends Warrior {
-    mainWeapon = [Axe, Knife, Arm];
-
     constructor(position, name) {
         super(position, name);
         this.attack = 15;
         this.luck = 20;
         this.description = 'Гном';
-        this.weapon = new Axe();
         this.initializeLife(130);
+        this.initializeWeapon([Axe, Knife, Arm]);
     }
 
     takeDamage(damage) {

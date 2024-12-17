@@ -1,4 +1,5 @@
 import Player from '../Player';
+import Warrior from '../Warrior';
 
 test('creating object of Player class', () => {
     const position = 10;
@@ -42,4 +43,10 @@ test('Player methods', () => {
         expect(luck).toBeGreaterThanOrEqual(0);
         expect(luck).toBeLessThanOrEqual(1.1);
     }
+});
+
+test('Warrior test', () => {
+    let pos = 0;
+    let name = "Эй, ты!";
+    const warrior = new Warrior(pos, name);
 });

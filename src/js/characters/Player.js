@@ -7,6 +7,7 @@ export default class Player {
     luck = 10;
     description = 'Игрок';
     countBeat = 0;
+    weaponList = [];
     weapon;
     position;
     name;
@@ -14,6 +15,7 @@ export default class Player {
     initLife;
     magic;
     initMagic;
+    lastLuckValue;
 
     constructor(position, name) {
         if (!Number.isInteger(position)) {
@@ -24,14 +26,23 @@ export default class Player {
             throw new Error('Name does not exist');
         }
         this.name = name;
-        this.weapon = new Arm();
         this.initializeLife(100);
         this.initializeMagic(20);
+        this.initializeWeapon([Arm]);
+    }
+
+    dispatchGameMessage(message) {
+        let event = new CustomEvent("game_message", { detail: {
+            message: message,
+            player: this,
+        }});
+        document.querySelector('body').dispatchEvent(event);
     }
 
     getLuck() {
         const randomNumber = Math.random() * 100;
-        return (randomNumber + this.luck) / 100;
+        this.lastLuckValue = (randomNumber + this.luck) / 100;
+        return this.lastLuckValue;
     }
 
     getDamage(distance) {
@@ -82,7 +93,116 @@ export default class Player {
         }
     }
 
+    initializeWeapon(weapons) {
+        for (let weaponClass of weapons) {
+            let weapon = new weaponClass();
+            this.weaponList.push(weapon);
+        }
+        this.weapon = this.weaponList.shift();
+    }
+
     incCountBeat() {
         this.countBeat += 1;
+    }
+
+    moveLeft(distance) {
+        this.dispatchGameMessage(`Move to left. Distance: ${distance}`);
+        if (distance > this.speed) {
+            distance = this.speed;
+        }
+        this.position -= distance;
+    }
+
+    moveRight(distance) {
+        this.dispatchGameMessage(`Move to right. Distance: ${distance}`);
+        if (distance > this.speed) {
+            distance = this.speed;
+        }
+        this.position += distance;
+    }
+
+    move(distance) {
+        if (distance < 0) {
+            this.moveLeft(Math.abs(distance));
+        } else {
+            this.moveRight(distance);
+        }
+    }
+
+    isAttackBlocked() {
+        return this.getLuck() > (100 - this.luck) / 100;
+    }
+
+    dodged() {
+        return this.getLuck() > (100 - this.agility - this.speed) / 100;
+    }
+
+    takeAttack(damage) {
+        if (this.isAttackBlocked()) {
+            this.weapon.takeDamage(damage);
+            this.dispatchGameMessage(`Attack was blocked. Weapon durability: ${this.weapon.durability}`);
+            return;
+        }
+        if (this.dodged()) {
+            this.dispatchGameMessage('Attack was dodged');
+            return;
+        }
+        this.takeDamage(damage);
+    }
+
+    checkWeapon() {
+        if (this.weapon.isBroken()) {
+            this.dispatchGameMessage(`Weapon ${this.weapon.name} was broken.`)
+            this.weapon = this.weaponList.shift();
+            this.dispatchGameMessage(`Pick ${this.weapon.name} weapon`);
+        }
+    }
+
+    tryAttack(enemy) {
+        let distance = Math.abs(this.position - enemy.position);
+        if (this.weapon.range < distance) {
+            return;
+        }
+        this.weapon.takeDamage(10 * this.getLuck());
+        let damage = this.getDamage(distance);
+        enemy.takeAttack(damage);
+        if (distance === 0) {
+            enemy.moveRight(1);
+            enemy.takeAttack(damage * 2);
+        }
+    }
+
+    countLiveEnemies(players) {
+        let count = 0;
+        for (let player of players) {
+            if (player === this || player.isDead()) {
+                continue;
+            }
+            count++;
+        }
+        return count;
+    }
+
+    chooseEnemy(players) {
+        let enemy = null;
+        for (let player of players) {
+            if (player === this || player.isDead()) {
+                continue;
+            }
+            if (enemy === null) {
+                enemy = player;
+            } else {
+                if (enemy.life > player.life) {
+                    enemy = player;
+                }
+            }
+        }
+        return enemy;
+    }
+
+    moveToEnemy(enemy) {
+        let distance = enemy.position - this.position;
+        this.dispatchGameMessage(`Move to ${enemy.name} (${enemy.position} - ${this.position}). Distance: ${distance}`);
+        this.move(distance);
     }
 }

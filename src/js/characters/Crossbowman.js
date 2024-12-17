@@ -4,15 +4,13 @@ import Arm from '../weapons/Arm';
 import Archer from './Archer';
 
 export default class Crossbowman extends Archer {
-    mainWeapon = [LongBow, Knife, Arm];
-
     constructor(position, name) {
         super(position, name);
         this.attack = 8;
         this.agility = 20;
         this.luck = 15;
         this.description = 'Арбалетчик';
-        this.weapon = new LongBow();
         this.initializeLife(85);
+        this.initializeWeapon([LongBow, Knife, Arm]);
     }
 }

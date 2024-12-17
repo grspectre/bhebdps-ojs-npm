@@ -1,22 +1,44 @@
-import Archer from './characters/Archer';
-import Warrior from './characters/Warrior';
-import Mage from './characters/Mage';
-import Dwarf from './characters/Dwarf';
-import Crossbowman from './characters/Crossbowman';
-import Demourge from './characters/Demourge';
+export default class Game {
+    players;
+    container;
+    turnCount = 1;
 
-export function play() {
-    const archer = new Archer();
-    const characters = [
-        {name: 'мечник', obj: archer},
-        {name: 'маг', obj: new Mage()},
-        {name: 'маг', obj: new Mage()},
-        {name: 'лучник', obj: new Crossbowman()},
-        {name: 'воин', obj: new Warrior()},
-        {name: 'гном', obj: new Dwarf()},
-        {name: 'мург', obj: new Demourge()},
-    ];
-      
-    const alive = characters.filter(item => item.health > 0);
-    console.log(alive);
+    constructor(container, players) {
+        this.container = container;
+        this.players = players;
+        this.messageEventListener();
+    }
+
+    messageEventListener() {
+        document
+            .querySelector('body')
+            .addEventListener('game_message', (ev) => {
+                console.log(ev);
+            })
+        ;
+    }
+
+    turn() {
+        console.log(`Turn ${this.turnCount}`);
+        for (let player of this.players) {
+            if (player.isDead()) {
+                continue;
+            }
+            let enemy = player.chooseEnemy(this.players);
+            if (enemy === null) {
+                return false; // game ended
+            }
+            player.moveToEnemy(enemy);
+            player.tryAttack(enemy);
+        }
+        this.turnCount++;
+        return true;
+    }
+
+    play() {
+        let hasNextTurn = true;
+        while (hasNextTurn) {
+            hasNextTurn = this.turn();
+        }
+    }
 }

@@ -3,17 +3,15 @@ import Knife from '../weapons/Knife';
 import Arm from '../weapons/Arm';
 import Player from './Player';
 
-export default class Warrior extends Player {
-    mainWeapon = [Bow, Knife, Arm];
-
+export default class Archer extends Player {
     constructor(position, name) {
         super(position, name);
         this.attack = 5;
         this.agility = 10;
         this.description = 'Лучник';
-        this.weapon = new Bow();
         this.initializeLife(80);
         this.initializeMagic(35);
+        this.initializeWeapon([Bow, Knife, Arm]);
     }
 
     getDamage(distance) {
