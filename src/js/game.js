@@ -1,31 +1,42 @@
 export default class Game {
     players;
-    container;
+    el;
     turnCount = 1;
 
     constructor(container, players) {
-        this.container = container;
+        this.el = document.querySelector(container);
         this.players = players;
         this.messageEventListener();
+    }
+
+    info(clz, message) {
+        let div = document.createElement('div');
+        let txt = document.createTextNode(message);
+        div.appendChild(txt);
+        div.classList.add(clz);
+        this.el.appendChild(div);
     }
 
     messageEventListener() {
         document
             .querySelector('body')
             .addEventListener('game_message', (ev) => {
-                console.log(ev);
+                let player = ev.detail.player;
+                let message = ev.detail.message;
+                this.info('message', `${player.name} (${player.description}): ${message}`);
             })
         ;
     }
 
     turn() {
-        console.log(`Turn ${this.turnCount}`);
+        this.info('title', `Turn ${this.turnCount}`);
         for (let player of this.players) {
             if (player.isDead()) {
                 continue;
             }
             let enemy = player.chooseEnemy(this.players);
             if (enemy === null) {
+                this.info('title', `Won ${player.name}`);
                 return false; // game ended
             }
             player.moveToEnemy(enemy);
@@ -36,6 +47,7 @@ export default class Game {
     }
 
     play() {
+        this.info('title', 'play begin');
         let hasNextTurn = true;
         while (hasNextTurn) {
             hasNextTurn = this.turn();

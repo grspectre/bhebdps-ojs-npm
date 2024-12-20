@@ -6,7 +6,8 @@ export default [
   {
     ignores: [
       "dist/",
-      "webpack.config.js"
+      "webpack.config.js",
+      "**/__tests__/*"
     ],
   },
   pluginJs.configs.recommended,

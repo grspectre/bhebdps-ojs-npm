@@ -130,11 +130,13 @@ export default class Player {
     }
 
     isAttackBlocked() {
-        return this.getLuck() > (100 - this.luck) / 100;
+        return this.getLuck() > ((100 - this.luck) / 100);
     }
 
     dodged() {
-        return this.getLuck() > (100 - this.agility - this.speed) / 100;
+        let luck = this.getLuck();
+        let condition = (100 - this.agility - this.speed) / 100;
+        return luck > condition;
     }
 
     takeAttack(damage) {
@@ -144,10 +146,12 @@ export default class Player {
             return;
         }
         if (this.dodged()) {
-            this.dispatchGameMessage('Attack was dodged');
+            this.dispatchGameMessage(`Attack was dodged.`);
             return;
         }
+
         this.takeDamage(damage);
+        this.dispatchGameMessage(`Damage: ${damage}. Life: ${this.life}`);
     }
 
     checkWeapon() {
