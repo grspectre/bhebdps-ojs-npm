@@ -36,7 +36,11 @@ export default class Player {
             message: message,
             player: this,
         }});
-        document.querySelector('body').dispatchEvent(event);
+        try {
+            document.querySelector('body').dispatchEvent(event);
+        } catch (error) {
+//            console.log(error.message);
+        }
     }
 
     getLuck() {
@@ -174,17 +178,6 @@ export default class Player {
             enemy.moveRight(1);
             enemy.takeAttack(damage * 2);
         }
-    }
-
-    countLiveEnemies(players) {
-        let count = 0;
-        for (let player of players) {
-            if (player === this || player.isDead()) {
-                continue;
-            }
-            count++;
-        }
-        return count;
     }
 
     chooseEnemy(players) {

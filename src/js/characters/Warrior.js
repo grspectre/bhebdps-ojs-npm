@@ -18,7 +18,7 @@ export default class Warrior extends Player {
         if (this.getLifeProportion() < 0.5 && this.getLuck() > 0.8) {
             if (this.magic < damage) {
                 damage -= this.magic;
-                this.setMagic(0);
+                this.magic = 0;
                 this.setLife(-1 * damage);
             } else {
                 this.setMagic(-1 * damage);
